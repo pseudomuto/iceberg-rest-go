@@ -37,6 +37,7 @@ func TestCreateNamespace(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, http.StatusConflict, resp.StatusCode())
 		require.Equal(t, "AlreadyExistsException", resp.JSON409.Error.Type)
+		require.EqualError(t, resp.Error(), "Namespace already exists: testing.newnamespace")
 
 		// Delete the namespace.
 		delResp, err := client.DropNamespaceWithResponse(ctx, NamespaceString(req.Namespaces))

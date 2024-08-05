@@ -4751,6 +4751,11 @@ func (c *Client) applyEditors(ctx context.Context, req *http.Request, additional
 	return nil
 }
 
+// Error satisfies Error for ErrorModel.
+func (e *ErrorModel) Error() string {
+	return e.Message
+}
+
 // ClientWithResponses builds on ClientInterface to offer response payloads
 type ClientWithResponses struct {
 	ClientInterface
@@ -4892,8 +4897,42 @@ type GetConfigServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *GetConfigServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *GetConfigServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r GetConfigServerResponse) Status() string {
+func (r *GetConfigServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -4901,7 +4940,7 @@ func (r GetConfigServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetConfigServerResponse) StatusCode() int {
+func (r *GetConfigServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4921,8 +4960,43 @@ type ListNamespacesServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *ListNamespacesServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *ListNamespacesServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r ListNamespacesServerResponse) Status() string {
+func (r *ListNamespacesServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -4930,7 +5004,7 @@ func (r ListNamespacesServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ListNamespacesServerResponse) StatusCode() int {
+func (r *ListNamespacesServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4951,8 +5025,44 @@ type CreateNamespaceServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *CreateNamespaceServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON406,
+		r.JSON409,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *CreateNamespaceServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r CreateNamespaceServerResponse) Status() string {
+func (r *CreateNamespaceServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -4960,7 +5070,7 @@ func (r CreateNamespaceServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r CreateNamespaceServerResponse) StatusCode() int {
+func (r *CreateNamespaceServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4979,8 +5089,42 @@ type DropNamespaceServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *DropNamespaceServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *DropNamespaceServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r DropNamespaceServerResponse) Status() string {
+func (r *DropNamespaceServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -4988,7 +5132,7 @@ func (r DropNamespaceServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r DropNamespaceServerResponse) StatusCode() int {
+func (r *DropNamespaceServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5008,8 +5152,43 @@ type LoadNamespaceMetadataServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *LoadNamespaceMetadataServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *LoadNamespaceMetadataServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r LoadNamespaceMetadataServerResponse) Status() string {
+func (r *LoadNamespaceMetadataServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5017,7 +5196,7 @@ func (r LoadNamespaceMetadataServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r LoadNamespaceMetadataServerResponse) StatusCode() int {
+func (r *LoadNamespaceMetadataServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5036,8 +5215,42 @@ type NamespaceExistsServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *NamespaceExistsServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *NamespaceExistsServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r NamespaceExistsServerResponse) Status() string {
+func (r *NamespaceExistsServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5045,7 +5258,7 @@ func (r NamespaceExistsServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r NamespaceExistsServerResponse) StatusCode() int {
+func (r *NamespaceExistsServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5067,8 +5280,45 @@ type UpdatePropertiesServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *UpdatePropertiesServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON406,
+		r.JSON419,
+		r.JSON422,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *UpdatePropertiesServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r UpdatePropertiesServerResponse) Status() string {
+func (r *UpdatePropertiesServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5076,7 +5326,7 @@ func (r UpdatePropertiesServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r UpdatePropertiesServerResponse) StatusCode() int {
+func (r *UpdatePropertiesServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5097,8 +5347,44 @@ type RegisterTableServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *RegisterTableServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON409,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *RegisterTableServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r RegisterTableServerResponse) Status() string {
+func (r *RegisterTableServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5106,7 +5392,7 @@ func (r RegisterTableServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r RegisterTableServerResponse) StatusCode() int {
+func (r *RegisterTableServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5126,8 +5412,43 @@ type ListTablesServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *ListTablesServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *ListTablesServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r ListTablesServerResponse) Status() string {
+func (r *ListTablesServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5135,7 +5456,7 @@ func (r ListTablesServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ListTablesServerResponse) StatusCode() int {
+func (r *ListTablesServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5156,8 +5477,44 @@ type CreateTableServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *CreateTableServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON409,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *CreateTableServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r CreateTableServerResponse) Status() string {
+func (r *CreateTableServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5165,7 +5522,7 @@ func (r CreateTableServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r CreateTableServerResponse) StatusCode() int {
+func (r *CreateTableServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5184,8 +5541,42 @@ type DropTableServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *DropTableServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *DropTableServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r DropTableServerResponse) Status() string {
+func (r *DropTableServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5193,7 +5584,7 @@ func (r DropTableServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r DropTableServerResponse) StatusCode() int {
+func (r *DropTableServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5213,8 +5604,43 @@ type LoadTableServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *LoadTableServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *LoadTableServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r LoadTableServerResponse) Status() string {
+func (r *LoadTableServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5222,7 +5648,7 @@ func (r LoadTableServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r LoadTableServerResponse) StatusCode() int {
+func (r *LoadTableServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5241,8 +5667,42 @@ type TableExistsServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *TableExistsServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *TableExistsServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r TableExistsServerResponse) Status() string {
+func (r *TableExistsServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5250,7 +5710,7 @@ func (r TableExistsServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r TableExistsServerResponse) StatusCode() int {
+func (r *TableExistsServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5274,8 +5734,47 @@ type UpdateTableServerResponse struct {
 	JSON5XX      *IcebergErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *UpdateTableServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON409,
+		r.JSON419,
+		r.JSON500,
+		r.JSON502,
+		r.JSON503,
+		r.JSON504,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *UpdateTableServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r UpdateTableServerResponse) Status() string {
+func (r *UpdateTableServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5283,7 +5782,7 @@ func (r UpdateTableServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r UpdateTableServerResponse) StatusCode() int {
+func (r *UpdateTableServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5302,8 +5801,42 @@ type ReportMetricsServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *ReportMetricsServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *ReportMetricsServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r ReportMetricsServerResponse) Status() string {
+func (r *ReportMetricsServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5311,7 +5844,7 @@ func (r ReportMetricsServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ReportMetricsServerResponse) StatusCode() int {
+func (r *ReportMetricsServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5331,8 +5864,43 @@ type ListViewsServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *ListViewsServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *ListViewsServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r ListViewsServerResponse) Status() string {
+func (r *ListViewsServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5340,7 +5908,7 @@ func (r ListViewsServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ListViewsServerResponse) StatusCode() int {
+func (r *ListViewsServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5361,8 +5929,44 @@ type CreateViewServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *CreateViewServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON409,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *CreateViewServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r CreateViewServerResponse) Status() string {
+func (r *CreateViewServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5370,7 +5974,7 @@ func (r CreateViewServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r CreateViewServerResponse) StatusCode() int {
+func (r *CreateViewServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5389,8 +5993,42 @@ type DropViewServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *DropViewServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *DropViewServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r DropViewServerResponse) Status() string {
+func (r *DropViewServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5398,7 +6036,7 @@ func (r DropViewServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r DropViewServerResponse) StatusCode() int {
+func (r *DropViewServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5418,8 +6056,43 @@ type LoadViewServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *LoadViewServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *LoadViewServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r LoadViewServerResponse) Status() string {
+func (r *LoadViewServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5427,7 +6100,7 @@ func (r LoadViewServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r LoadViewServerResponse) StatusCode() int {
+func (r *LoadViewServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5442,8 +6115,38 @@ type ViewExistsServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *ViewExistsServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *ViewExistsServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r ViewExistsServerResponse) Status() string {
+func (r *ViewExistsServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5451,7 +6154,7 @@ func (r ViewExistsServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ViewExistsServerResponse) StatusCode() int {
+func (r *ViewExistsServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5475,8 +6178,47 @@ type ReplaceViewServerResponse struct {
 	JSON5XX      *ErrorModel
 }
 
+// Error returns the API response error if any.
+func (r *ReplaceViewServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON409,
+		r.JSON419,
+		r.JSON500,
+		r.JSON502,
+		r.JSON503,
+		r.JSON504,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *ReplaceViewServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r ReplaceViewServerResponse) Status() string {
+func (r *ReplaceViewServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5484,7 +6226,7 @@ func (r ReplaceViewServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ReplaceViewServerResponse) StatusCode() int {
+func (r *ReplaceViewServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5500,8 +6242,39 @@ type GetTokenServerResponse struct {
 	JSON5XX      *OAuthErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *GetTokenServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON200,
+		r.JSON400,
+		r.JSON401,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *GetTokenServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r GetTokenServerResponse) Status() string {
+func (r *GetTokenServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5509,7 +6282,7 @@ func (r GetTokenServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetTokenServerResponse) StatusCode() int {
+func (r *GetTokenServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5530,8 +6303,44 @@ type RenameTableServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *RenameTableServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON406,
+		r.JSON409,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *RenameTableServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r RenameTableServerResponse) Status() string {
+func (r *RenameTableServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5539,7 +6348,7 @@ func (r RenameTableServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r RenameTableServerResponse) StatusCode() int {
+func (r *RenameTableServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5562,8 +6371,46 @@ type CommitTransactionServerResponse struct {
 	JSON5XX      *IcebergErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *CommitTransactionServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON409,
+		r.JSON419,
+		r.JSON500,
+		r.JSON502,
+		r.JSON503,
+		r.JSON504,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *CommitTransactionServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r CommitTransactionServerResponse) Status() string {
+func (r *CommitTransactionServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5571,7 +6418,7 @@ func (r CommitTransactionServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r CommitTransactionServerResponse) StatusCode() int {
+func (r *CommitTransactionServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5592,8 +6439,44 @@ type RenameViewServerResponse struct {
 	JSON5XX      *ServerErrorResponse
 }
 
+// Error returns the API response error if any.
+func (r *RenameViewServerResponse) Error() error {
+	possibilities := []any{
+		r.JSON400,
+		r.JSON401,
+		r.JSON403,
+		r.JSON404,
+		r.JSON406,
+		r.JSON409,
+		r.JSON419,
+		r.JSON503,
+		r.JSON5XX,
+	}
+
+	for _, v := range possibilities {
+		if v == nil {
+			continue
+		}
+
+		if err, ok := v.(*ErrorModel); ok && err != nil {
+			return err
+		}
+
+		if err, ok := v.(*IcebergErrorResponse); ok && err != nil {
+			return &err.Error
+		}
+	}
+
+	return nil
+}
+
+// RawBody returns the bytes of the response body.
+func (r *RenameViewServerResponse) RawBody() []byte {
+	return r.Body
+}
+
 // Status returns HTTPResponse.Status
-func (r RenameViewServerResponse) Status() string {
+func (r *RenameViewServerResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -5601,7 +6484,7 @@ func (r RenameViewServerResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r RenameViewServerResponse) StatusCode() int {
+func (r *RenameViewServerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}

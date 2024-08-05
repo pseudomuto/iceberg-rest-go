@@ -25,6 +25,12 @@ test: ## Run the smoke test
 catalog: ## Run the catalog server used by tests
 	@docker run --rm -it -p "8181:8181" tabulario/iceberg-rest
 
+##@: Release
+
+.PHONY: release
+release: ## Release (tag) a new version (VERSION=<version> make release)
+	@git tag -sm "Release v$(VERSION)" "v$(VERSION)"
+	@git push --atomic origin main "v$(VERSION)"
 
 ##@: Generate
 

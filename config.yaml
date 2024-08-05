@@ -1,0 +1,12 @@
+package: iceberg
+output: client.gen.go
+
+compatibility:
+  circular-reference-limit: 20
+
+generate:
+  client: true
+  models: true
+
+output-options:
+  response-type-suffix: ServerResponse

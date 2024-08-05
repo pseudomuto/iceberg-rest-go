@@ -10,3 +10,5 @@ generate:
 
 output-options:
   response-type-suffix: ServerResponse
+  user-templates:
+    client-with-responses.tmpl: templates/client-with-responses.tmpl

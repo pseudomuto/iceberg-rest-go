@@ -10,7 +10,7 @@ const NamespaceDelimiter = "\x1F"
 // PrimitiveTypes
 // See: https://iceberg.apache.org/spec/#primitive-types
 var (
-	Bool          = ToType("bool")
+	Bool          = ToType("boolean")
 	Int           = ToType("int")
 	Long          = ToType("long")
 	Float         = ToType("float")

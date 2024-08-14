@@ -71,6 +71,11 @@ func TestCreateTable(t *testing.T) {
 							},
 						}),
 					},
+					{
+						Id:   11,
+						Name: "isDone",
+						Type: Bool,
+					},
 				},
 				IdentifierFieldIds: &[]int{1},
 			},
